@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-import requests
+import requests, re
 
 from utils.common_utils import *
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 class OnOffMix:
     def __init__(self):
@@ -41,15 +42,17 @@ class OnOffMix:
                     title = h5_title.text if not is_none(h5_title) else ""
                     payment_type = span_payment_type.text if not is_none(span_payment_type) else ""
                     category_type = span_category_type.text if not is_none(span_category_type) else ""
-                    start_date = ""
-                    end_date = ""
-                    start_time = ""
-                    end_time = ""
+                    date = span_date.text.split("~") if not is_none(span_date) else None
+                    start_date = datetime.strptime(re.sub(r"[^\d]", "", date[0]), "%Y%m%d%H%M") if not is_none(date) else ""
+
+                    if is_none(date[1]):
+                        end_date = ""
+                    elif len(date[1]) < 10:
+                        end_date = datetime.strptime(start_date.strftime("%Y%m%d")+str(date[1].strip()), "%Y%m%d%H:%M")
+                    else:
+                        end_date = datetime.strptime(re.sub(r"[^\d]", "", date[1]), "%Y%m%d%H%M")
+
                     place = span_place.text if not is_none(span_place) else ""
-
-                    print(span_date)
-                    print(span_place)
-
 
                     event = {
                         "link": link.strip(),
@@ -57,10 +60,10 @@ class OnOffMix:
                         "title": title.strip(),
                         "payment_type": payment_type.strip(),
                         "category_type" : category_type.strip(),
-                        "start_date": start_date.strip(),
-                        "end_date": end_date.strip(),
-                        "start_time": start_time.strip(),
-                        "end_time": end_time.strip(),
+                        "start_date": start_date.strftime("%Y-%m-%d") if start_date != "" else "",
+                        "end_date": end_date.strftime("%Y-%m-%d") if end_date != "" else "",
+                        "start_time": start_date.strftime("%H:%M") if start_date != "" else "",
+                        "end_time": end_date.strftime("%H:%M") if end_date != "" else "",
                         "place": place.strip()
                     }
 
