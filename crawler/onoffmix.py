@@ -64,7 +64,8 @@ class OnOffMix:
                         "end_date": end_date.strftime("%Y-%m-%d") if end_date != "" else "",
                         "start_time": start_date.strftime("%H:%M") if start_date != "" else "",
                         "end_time": end_date.strftime("%H:%M") if end_date != "" else "",
-                        "place": place.strip()
+                        "place": place.strip(),
+                        "is_close": ""
                     }
 
                     result.append(event)

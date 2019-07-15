@@ -52,5 +52,6 @@ class EventUs:
                         "place": item["Area_Detail"],
                         "is_close":item["IsClose"]
                     }
-                    result.append(data)
+                    result.append(event)
+                    print(event)
 EventUs().crawling()
